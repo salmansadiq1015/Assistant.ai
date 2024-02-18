@@ -1,0 +1,27 @@
+Old Run Function
+
+ const handleRun = async (runId) => {
+    setLoading(true);
+    const intervalId = setInterval(async () => {
+      try {
+        const { data } = await axios.get(
+          `${process.env.NEXT_PUBLIC_SERVER_URI}/api/v1/message/run/${threadId}/${runId}`
+        );
+        const updatedRun = data.status;
+        setStatus(updatedRun.status);
+        if (
+          ["cancelled", "failed", "completed", "expired"].includes(
+            updatedRun.status
+          )
+        ) {
+          getMessages();
+          clearInterval(intervalId);
+          setLoading(false);
+        }
+      } catch (error) {
+        console.log(error);
+        clearInterval(intervalId);
+        setLoading(false);
+      }
+    }, 1000);
+  };
